@@ -16,7 +16,7 @@ int main() {
     SDL_Renderer* sdl_renderer = nullptr;
     SDL_CreateWindowAndRenderer(800, 600, 0, &window, &sdl_renderer);
 
-    viewer camera(vec(0, 0, 5), quat(1,0,0,0));
+    viewer camera(vec(-5, 5, 5), quat(1,0,0,0));
     vector<face3d> scene;
     renderer game(camera, scene, sdl_renderer,800,600);
   
@@ -26,7 +26,12 @@ int main() {
       }
 
     }
-
+    // x axis, y axis, z axis 
+    for (double i = 0; i<200; i++){
+      scene.push_back(face3d(vec(-100+i,0,0),vec(-100+i,0,0),vec(-100+i+1,0,0),SDL_Color{255,0,0,255}));
+      scene.push_back(face3d(vec(0,-100+i,0),vec(0,-100+i,0),vec(0,-100+i+1,0),SDL_Color{0,0,255,255}));
+      scene.push_back(face3d(vec(0,0,-100+i),vec(0,0,-100+i),vec(0,0,-100+i+1),SDL_Color{0,255,0,255}));
+    }
 
 
     float movespeed= 0.2;
