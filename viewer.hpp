@@ -20,13 +20,13 @@ public:
         fov = initialfov;
     }
 
-    void updateposition (float forward, float horizontal){
+    void updateposition (float forward, float horizontal, float vertical){
         vec localx = view.rotate(i);
         vec localy = view.rotate(j);
         vec localz = view.rotate(k);
-        position = position + localx * forward;
+        position = position + localx.npart(k).normal() * forward;
         position = position + localy * horizontal;
-
+        position = position + k * vertical;
     }
 
     // updates view based on horizontal and vertical change in angle.
@@ -53,7 +53,7 @@ public:
         vec localy = view.rotate(j);
         vec localz = view.rotate(k);
         vec diff = v - position;
-        if (inner(diff,localx) <= fov){
+        if (inner(diff,localx) <= 0){
           return vec();
         }
         float a = fov/inner(diff,localx);

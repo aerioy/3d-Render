@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-
+#include <algorithm>
 #include "vector.hpp"
 #include "quaternion.hpp"
 #include "face.hpp"
@@ -14,11 +14,11 @@ using namespace std;
 int main() {
     SDL_Window*   window       = nullptr;
     SDL_Renderer* sdl_renderer = nullptr;
-    SDL_CreateWindowAndRenderer(800, 600, 0, &window, &sdl_renderer);
+    SDL_CreateWindowAndRenderer(1000, 700, 0, &window, &sdl_renderer);
 
     viewer camera(vec(-5, 5, 5), quat(1,0,0,0));
     vector<face3d> scene;
-    renderer game(camera, scene, sdl_renderer,800,600);
+    renderer game(camera, scene, sdl_renderer,1000,700);
   
     for (double i = 0; i <= 10; i++){
       for (double j = 0; j<= 10; j++) {
@@ -34,8 +34,8 @@ int main() {
     }
 
 
-    float movespeed= 0.2;
-    float turnspeed= 0.03;
+    float movespeed= 1;
+    float turnspeed= 0.1;
     int   gridradius = 10;
     float cellsize   = 1.0;
     SDL_Color gridcolor{200,200,200,255};
@@ -51,17 +51,17 @@ int main() {
                 switch (e.key.keysym.scancode) {
                   // move forward and backward 
                   case SDL_SCANCODE_W:
-                    camera.updateposition(movespeed,0);
+                    camera.updateposition(movespeed,0,0);
                     break;
                   case SDL_SCANCODE_S:
-                    camera.updateposition(-movespeed,0);
+                    camera.updateposition(-movespeed,0,0);
                     break;
                   // move to left and right
                   case SDL_SCANCODE_A:
-                    camera.updateposition(0,-movespeed);
+                    camera.updateposition(0,-movespeed,0);
                     break;
                   case SDL_SCANCODE_D:
-                    camera.updateposition(0,movespeed);
+                    camera.updateposition(0,movespeed,0);
                     break;
                   // look around based on arrow keys
                   case SDL_SCANCODE_LEFT:
@@ -76,7 +76,21 @@ int main() {
                   case SDL_SCANCODE_DOWN:
                     camera.updateview(0, turnspeed);
                     break;
+                  //controls up and down movement
+                  case SDL_SCANCODE_SPACE:
+                    camera.updateposition(0,0,movespeed);
+                    break;
+                  case SDL_SCANCODE_V:
+                    camera.updateposition(0,0,-movespeed);
+                    break;
 
+                  // controls fov  
+                  case SDL_SCANCODE_Z:
+                    camera.fov += 1;
+                    break;
+                  case SDL_SCANCODE_X:
+                    camera.fov = max(camera.fov-1.f,1.f);
+                    break;
                   default: break;
                 }
             }
