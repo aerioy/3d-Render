@@ -11,6 +11,12 @@
 
 using namespace std;
 
+SDL_Color checkercolor(int i, int j){
+  if ((i + j) % 2 == 0){
+    return SDL_Color{128,128,128,100};
+  }
+  return SDL_Color{230,230,230,100};
+}
 
 int main() {
     SDL_Window*   window       = nullptr;
@@ -19,13 +25,14 @@ int main() {
     SDL_SetRelativeMouseMode(SDL_TRUE);
     bool toggle = true;
 
-    viewer camera(vec(-5, 5, 5), quat(1,0,0,0));
+    viewer camera(vec(-5, 5, 5), quat(1,0,0,0)); 
     vector<face3d> scene;
     renderer game(camera, scene, sdl_renderer,1000,700);
   
-    for (double i = -10; i <= 10; i+= 0.5){
-      for (double j = -10; j<= 10; j+= 0.5) {
-        scene.push_back(face3d((vec(i,j,0)),(vec(i+1,j,0)),(vec(i,j+1,0))));
+    for (double i = -10; i <= 10; i++){
+      for (double j = -10; j<= 10; j++) {
+        scene.push_back(face3d((vec(i,j,0)),(vec(i+1,j,0)),(vec(i,j+1,0)),checkercolor(i,j)));
+        scene.push_back(face3d((vec(i+1,j+1,0)),(vec(i+1,j,0)),(vec(i,j+1,0)),checkercolor(i,j)));
       }
 
     }
@@ -37,7 +44,7 @@ int main() {
     }
 
 
-    float movespeed= 1;
+    float movespeed= 0.3;
     float turnspeed= 0.1;
     int   gridradius = 10;
     float cellsize   = 1.0;

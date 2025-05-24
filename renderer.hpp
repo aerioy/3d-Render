@@ -23,8 +23,8 @@ public:
 
 
    void renderframe() {
-    int cx = windowx/2;
-    int cy = windowy/2;
+    float cx = windowx/2;
+    float cy = windowy/2;
 
     vector<face2d> projected = camera.project_scene(scene);
 
@@ -32,18 +32,33 @@ public:
     SDL_RenderClear(screen);
 
     for (const face2d& f : projected) {
-        int x1 = int(f.p1.x * zoom) + cx;
-        int y1 = -int(f.p1.y * zoom) + cy;
-        int x2 = int(f.p2.x * zoom) + cx;
-        int y2 = -int(f.p2.y * zoom) + cy;
-        int x3 = int(f.p3.x * zoom) + cx;
-        int y3 = -int(f.p3.y * zoom) + cy;
+        float x1 = (f.p1.x * zoom) + cx;
+        float y1 = -(f.p1.y * zoom) + cy;
+        float x2 = (f.p2.x * zoom) + cx;
+        float y2 = -(f.p2.y * zoom) + cy;
+        float x3 = (f.p3.x * zoom) + cx;
+        float y3 = -(f.p3.y * zoom) + cy;
         SDL_SetRenderDrawColor(screen, f.color.r, f.color.g, f.color.b, f.color.a);
         SDL_RenderDrawLine(screen, x1, y1, x2, y2);
         SDL_RenderDrawLine(screen, x2, y2, x3, y3);
         SDL_RenderDrawLine(screen, x3, y3, x1, y1);
+        SDL_Vertex vertex[3];
+        SDL_Color color = f.color;
+        vertex[0].position = {float(x1),float(y1)};
+        vertex[1].position = {float(x2),float(y2)};
+        vertex[2].position = {float(x3),float(y3)};
+        vertex[0].color = color;
+        vertex[1].color = color;
+        vertex[2].color = color;
+        vertex[0].tex_coord = {0.0f, 0.0f};
+        vertex[1].tex_coord = {0.0f, 0.0f};
+        vertex[2].tex_coord = {0.0f, 0.0f};
+        int indices[3] = {0,1,2};
+        SDL_RenderGeometry(screen,nullptr,vertex,3,indices,3);
+
+
     }
-    SDL_SetRenderDrawColor(screen,255,0,0,255);
+    SDL_SetRenderDrawColor(screen,255,255,0,255);
     SDL_RenderDrawLine(screen ,cx,cy+10,cx,cy-10);
     SDL_RenderDrawLine(screen ,cx+10,cy,cx-10,cy);
     SDL_RenderPresent(screen);
