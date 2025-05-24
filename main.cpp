@@ -11,18 +11,21 @@
 
 using namespace std;
 
+
 int main() {
     SDL_Window*   window       = nullptr;
     SDL_Renderer* sdl_renderer = nullptr;
     SDL_CreateWindowAndRenderer(1000, 700, 0, &window, &sdl_renderer);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+    bool toggle = true;
 
     viewer camera(vec(-5, 5, 5), quat(1,0,0,0));
     vector<face3d> scene;
     renderer game(camera, scene, sdl_renderer,1000,700);
   
-    for (double i = 0; i <= 10; i++){
-      for (double j = 0; j<= 10; j++) {
-        scene.push_back(face3d(vec(i,j,0),vec(i+1,j,0),vec(i,j+1,0)));
+    for (double i = -10; i <= 10; i+= 0.5){
+      for (double j = -10; j<= 10; j+= 0.5) {
+        scene.push_back(face3d((vec(i,j,0)),(vec(i+1,j,0)),(vec(i,j+1,0))));
       }
 
     }
@@ -83,7 +86,16 @@ int main() {
                   case SDL_SCANCODE_V:
                     camera.updateposition(0,0,-movespeed);
                     break;
-
+                  case SDL_SCANCODE_ESCAPE:
+                    if (toggle){
+                      SDL_SetRelativeMouseMode(SDL_FALSE);
+                      toggle = false;
+                    }
+                    else{
+                      SDL_SetRelativeMouseMode(SDL_TRUE);
+                      toggle = true;
+                    }
+                    break;
                   // controls fov  
                   case SDL_SCANCODE_Z:
                     camera.fov += 1;
@@ -92,7 +104,13 @@ int main() {
                     camera.fov = max(camera.fov-1.f,1.f);
                     break;
                   default: break;
+
                 }
+            }
+            else if (e.type == SDL_MOUSEMOTION){
+              float dx = float(e.motion.xrel)/100;
+              float dy = float(e.motion.yrel)/100;
+              camera.updateview(dx,dy);
             }
         }
 

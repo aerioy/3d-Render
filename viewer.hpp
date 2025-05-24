@@ -34,8 +34,8 @@ public:
     // vertical are done about local y axis
     void updateview (float horizontal, float vertical ){
         quat horizontal_update(horizontal,k);
-        quat vertical_update(vertical,view.rotate(j));
         view = horizontal_update * view;
+        quat vertical_update(vertical,view.rotate(j));
         view = vertical_update * view;
         view = view.normalize();
     }
